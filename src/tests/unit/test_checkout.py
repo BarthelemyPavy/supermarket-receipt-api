@@ -2,7 +2,7 @@
 
 import pytest
 
-from app.checkout import line_subtotal_cents, percentage_discount_cents
+from supermarket_receipt_api.services.checkout import line_subtotal_cents, percentage_discount_cents
 
 
 @pytest.mark.parametrize(
