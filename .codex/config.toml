@@ -1,0 +1,7 @@
+# Defense in depth for compatible Codex clients; not an administrator policy.
+sandbox_mode = "read-only"
+approval_policy = "never"
+allow_login_shell = false
+
+[features]
+hooks = true

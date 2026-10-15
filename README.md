@@ -67,7 +67,9 @@ Les jours suivants, vous ajouterez les tests d'intégration HTTP et l'image Dock
 
 Pas de développement complet d'API, de base de données, de Docker, de Kubernetes ni de tests d'intégration HTTP. Ces derniers seront abordés explicitement en journée 2. Il n'est pas nécessaire de démarrer un serveur pour tester les fonctions métier.
 
-L'utilisation des assistants IA sera précisée par l'enseignant au début du TD ; aucune autorisation ou interdiction n'est présumée dans ce kit.
+Si l'enseignant autorise un assistant pendant le TD, il intervient uniquement en **mode tuteur** : questions, indices progressifs et relecture de vos essais, sans solution complète ni modification des fichiers. Vous écrivez le code et lancez les commandes vous-mêmes. La présence de cette configuration ne remplace pas la consigne de séance.
+
+Le cadre est défini dans [AGENTS.md](AGENTS.md) et [CLAUDE.md](CLAUDE.md). Les hooks pour Codex et Claude Code sont fournis avec le dépôt ; ils nécessitent un client compatible et leur activation doit être vérifiée. Consulter [le fonctionnement et l'activation du mode tuteur](docs/tutorat.md). Ils ne résolvent pas le TD et n'ajoutent pas de tests métier au starter.
 
 ## Origine et ressources
 

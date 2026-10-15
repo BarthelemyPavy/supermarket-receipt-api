@@ -1,0 +1,28 @@
+{
+  "description": "Tuteur pédagogique en lecture seule pour le dépôt étudiant.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -I -B \"$(git rev-parse --show-toplevel)/.tutor/guard.py\" session-start || { printf \"%s\\n\" \"Mode tuteur : hook indisponible, arreter la session et prevenir l'enseignant.\" >&2; exit 2; }",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -I -B \"$(git rev-parse --show-toplevel)/.tutor/guard.py\" pre-tool || { printf \"%s\\n\" \"Mode tuteur : hook indisponible, operation refusee.\" >&2; exit 2; }",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
