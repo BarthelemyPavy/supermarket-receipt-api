@@ -8,24 +8,26 @@ Python 3.13 et `uv` doivent être disponibles. Ouvrez un terminal dans ce dossie
 
 ```bash
 uv sync --locked
-uv run pytest src/tests/unit
+uv run pytest tests/unit
 ```
 
 `pyproject.toml` déclare les dépendances et le package local ; `uv.lock` fixe leur résolution. `uv sync` installe aussi le package depuis `src/` en mode éditable : les modifications du code sont prises en compte sans réinstallation. N'ajoutez pas de `requirements.txt` ni d'installation manuelle avec `pip`.
 
-Les tests fournis passent : ils montrent comment démarrer, pas que tous les comportements sont corrects. Lisez [le contrat métier](docs/contrat.md), puis explorez le catalogue `CATALOG` et les fonctions dans `src/supermarket_receipt_api/services/checkout.py`, ainsi que `src/tests/unit/`.
+Les tests fournis passent : ils montrent comment démarrer, pas que tous les comportements sont corrects. Lisez [le contrat métier](docs/contrat.md), puis explorez le catalogue `CATALOG` et les fonctions dans `src/supermarket_receipt_api/services/checkout.py`, ainsi que `tests/unit/`.
 
 ## Se repérer dans le projet
 
 ```text
-src/
-├── supermarket_receipt_api/
-│   ├── __init__.py           Création de l'application et enregistrement des routes
-│   ├── __main__.py           Lancement local avec python -m
-│   ├── routes/               Adaptateurs HTTP : health, catalog et checkout
-│   ├── schemas/checkout.py   Modèles Pydantic des requêtes et réponses
-│   └── services/checkout.py  Catalogue et fonctions métier à examiner en J1
-└── tests/unit/               Six cas de départ, à compléter
+.
+├── src/
+│   └── supermarket_receipt_api/
+│       ├── __init__.py           Création de l'application et enregistrement des routes
+│       ├── __main__.py           Lancement local avec python -m
+│       ├── routes/               Adaptateurs HTTP : health, catalog et checkout
+│       ├── schemas/checkout.py   Modèles Pydantic des requêtes et réponses
+│       └── services/checkout.py  Catalogue et fonctions métier à examiner en J1
+└── tests/
+    └── unit/                    Six cas de départ, à compléter
 ```
 
 Une requête passe par une **route**, utilise les **schémas** pour valider ses données et appelle les **fonctions métier** du service. Les tests unitaires appellent directement ces fonctions, sans démarrer de serveur. Il n'y a ni base de données ni couche d'accès aux données à configurer.

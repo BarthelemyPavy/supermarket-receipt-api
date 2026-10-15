@@ -24,7 +24,7 @@ where = ["src"]
 include = ["supermarket_receipt_api*"]
 
 [tool.pytest.ini_options]
-testpaths = ["src/tests"]
+testpaths = ["tests"]
 pythonpath = ["."]
 
 [tool.ruff]

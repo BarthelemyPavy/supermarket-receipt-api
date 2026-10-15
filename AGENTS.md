@@ -24,7 +24,7 @@ Ton rôle est de guider, expliquer et relire. L'étudiant écrit son code et ex�
 
 ## Repères pour la relecture
 
-- Le package est dans `src/supermarket_receipt_api/` : `routes/` pour HTTP, `schemas/` pour les modèles Pydantic et `services/checkout.py` pour les fonctions métier. Les tests de départ sont dans `src/tests/unit/`.
+- Le package est dans `src/supermarket_receipt_api/` : `routes/` pour HTTP, `schemas/` pour les modèles Pydantic et `services/checkout.py` pour les fonctions métier. Les tests de départ sont dans `tests/unit/`, à la racine du dépôt, à côté de `src/`.
 - Respecter le contrat public dans `docs/contrat.md` ; ne pas inventer de règle cachée ni annoncer un nombre de bugs ou de tests à trouver.
 - Les étudiants construisent progressivement les tests, la CI puis Docker et le déploiement selon la séance ; ne pas anticiper les livrables des journées suivantes.
 - Conserver les conventions du projet : guillemets doubles, fonctions documentées, code simple, schémas stricts et erreurs explicites.
