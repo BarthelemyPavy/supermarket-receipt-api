@@ -41,13 +41,13 @@ dépôt, et les formes de commandes suivantes, sans les combiner :
 ```text
 pwd
 ls -la -- src/supermarket_receipt_api
-cat -- src/supermarket_receipt_api/routes/checkout.py
-head -n 80 -- src/supermarket_receipt_api/services/checkout.py
-tail -n 40 -- src/supermarket_receipt_api/services/checkout.py
+cat -- src/supermarket_receipt_api/main.py
+head -n 80 -- src/supermarket_receipt_api/checkout.py
+tail -n 40 -- src/supermarket_receipt_api/checkout.py
 rg --no-config --files
 rg --no-config --files -- src
 rg --no-config -n -- checkout src/supermarket_receipt_api
-rg --no-config -n -F -- checkout src/supermarket_receipt_api/routes/checkout.py
+rg --no-config -n -F -- checkout src/supermarket_receipt_api/main.py
 ```
 
 Les chemins contenant des espaces doivent être cités. Les redirections, pipelines,
@@ -57,7 +57,21 @@ une recherche textuelle simple ou partager l'extrait. `head` et `tail` acceptent
 à 2 000 lignes. Aucun `allow` n'est renvoyé aux outils : une lecture admise conserve
 les contrôles de permissions ordinaires du client.
 
-## Activation avant la séance
+## Premier lancement : chargement et vérification
+
+La configuration est déjà incluse dans le dépôt : aucun fichier à recopier ni skill
+à installer. « Mode tuteur » désigne nos consignes et nos garde-fous, pas un bouton
+spécifique de Codex ou de Claude Code. Ouvrir une session depuis la racine du dépôt
+permet au client de trouver ses fichiers de configuration.
+
+Le chargement ne dispense pas de la validation de confiance : en session interactive,
+Claude Code attend l'acceptation du dossier avant d'exécuter les hooks. Codex demande
+la confiance du projet **et** l'approbation de chaque définition de hook dans `/hooks`.
+Après ces validations, les hooks s'exécutent automatiquement aux événements prévus,
+tant qu'ils restent actifs et que leurs prérequis sont disponibles. Il n'est pas
+nécessaire de les activer à chaque question. Une définition modifiée demande une
+nouvelle approbation dans Codex. Vérifier leur exécution au premier lancement permet
+de ne pas confondre des fichiers présents avec une protection réellement chargée.
 
 Périmètre des commandes de hooks : **macOS, Linux ou Windows avec WSL2**, shell POSIX,
 Git et `python3` disponibles dans le terminal de l'assistant. Utiliser Python 3.10+
@@ -101,7 +115,7 @@ uv run pytest -q
 
 Les tests de garde-fous ne sont pas ajoutés à la suite métier de l'étudiant. Ils
 simulent des requêtes d'outils et exécutent le vrai script de décision en sous-processus,
-sans appliquer les écritures demandées. Ils sont séparés des six cas d'exemple du TD
+sans appliquer les écritures demandées. Ils sont séparés des 100 cas de départ du TD
 et ne fournissent pas de corrigé métier.
 
 ## Limites à connaître
@@ -132,7 +146,7 @@ réalisable dans l'éditeur et le terminal habituels, sans assistant.
 
 ## Références de configuration
 
-Documentation consultée le 15 octobre 2026 :
+Documentation de chargement et de confiance revérifiée le 20 octobre 2026 :
 
 - [Codex — hooks, confiance et limites](https://learn.chatgpt.com/docs/hooks).
 - [Codex — référence de configuration](https://learn.chatgpt.com/docs/config-file/config-reference).

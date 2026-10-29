@@ -68,18 +68,14 @@ class TutorGuardTests(unittest.TestCase):
         examples = [
             (
                 "Read",
-                {
-                    "file_path": str(
-                        ROOT / "src" / "supermarket_receipt_api" / "services" / "checkout.py"
-                    )
-                },
+                {"file_path": str(ROOT / "src" / "supermarket_receipt_api" / "checkout.py")},
             ),
-            ("Read", {"file_path": "src/supermarket_receipt_api/services/checkout.py"}),
+            ("Read", {"file_path": "src/supermarket_receipt_api/checkout.py"}),
             ("Glob", {"pattern": "src/supermarket_receipt_api/*.py"}),
             ("Glob", {"pattern": "*.py", "path": "src/supermarket_receipt_api"}),
             (
                 "Grep",
-                {"pattern": "def", "path": "src/supermarket_receipt_api/services/checkout.py"},
+                {"pattern": "def", "path": "src/supermarket_receipt_api/checkout.py"},
             ),
             ("Grep", {"pattern": "def", "path": "src/supermarket_receipt_api"}),
         ]
@@ -93,13 +89,13 @@ class TutorGuardTests(unittest.TestCase):
             "pwd",
             "ls -- src/supermarket_receipt_api",
             "ls -la -- src/supermarket_receipt_api",
-            "cat -- src/supermarket_receipt_api/services/checkout.py",
-            "head -n 1 -- src/supermarket_receipt_api/services/checkout.py",
-            "tail -n 2000 -- src/supermarket_receipt_api/services/checkout.py",
+            "cat -- src/supermarket_receipt_api/checkout.py",
+            "head -n 1 -- src/supermarket_receipt_api/checkout.py",
+            "tail -n 2000 -- src/supermarket_receipt_api/checkout.py",
             "rg --no-config --files",
             "rg --no-config --files -- src/supermarket_receipt_api",
-            "rg --no-config -n -- def src/supermarket_receipt_api/services/checkout.py",
-            "rg --no-config -n -F -- def src/supermarket_receipt_api/services/checkout.py",
+            "rg --no-config -n -- def src/supermarket_receipt_api/checkout.py",
+            "rg --no-config -n -F -- def src/supermarket_receipt_api/checkout.py",
         ]
         for tool_name, key in [("Bash", "command"), ("exec_command", "cmd")]:
             for command in commands:
@@ -114,7 +110,7 @@ class TutorGuardTests(unittest.TestCase):
                     self.payload(
                         name,
                         {
-                            "file_path": "src/supermarket_receipt_api/services/checkout.py",
+                            "file_path": "src/supermarket_receipt_api/checkout.py",
                             "content": "change",
                         },
                     )
@@ -143,13 +139,13 @@ class TutorGuardTests(unittest.TestCase):
             "pytest -q",
             "ruff check .",
             "git status",
-            "git checkout -- src/supermarket_receipt_api/services/checkout.py",
+            "git checkout -- src/supermarket_receipt_api/checkout.py",
             "touch src/supermarket_receipt_api/new.py",
-            "rm src/supermarket_receipt_api/services/checkout.py",
+            "rm src/supermarket_receipt_api/checkout.py",
             "sh -c pwd",
-            "env cat -- src/supermarket_receipt_api/services/checkout.py",
-            "command cat -- src/supermarket_receipt_api/services/checkout.py",
-            "/bin/cat -- src/supermarket_receipt_api/services/checkout.py",
+            "env cat -- src/supermarket_receipt_api/checkout.py",
+            "command cat -- src/supermarket_receipt_api/checkout.py",
+            "/bin/cat -- src/supermarket_receipt_api/checkout.py",
         ]:
             with self.subTest(command=command):
                 self.assert_denied(self.payload("Bash", {"command": command}))
@@ -161,9 +157,9 @@ class TutorGuardTests(unittest.TestCase):
             "pwd && pwd",
             "pwd | cat",
             "pwd > output.txt",
-            "cat < src/supermarket_receipt_api/services/checkout.py",
-            "cat -- $(pwd)/src/supermarket_receipt_api/services/checkout.py",
-            "cat -- `pwd`/src/supermarket_receipt_api/services/checkout.py",
+            "cat < src/supermarket_receipt_api/checkout.py",
+            "cat -- $(pwd)/src/supermarket_receipt_api/checkout.py",
+            "cat -- `pwd`/src/supermarket_receipt_api/checkout.py",
             "cat -- $HOME/file",
             "pwd\npwd",
             "pwd\r\npwd",
@@ -195,10 +191,10 @@ class TutorGuardTests(unittest.TestCase):
         """With no parameters, reject extended command syntax; return None after guard subprocesses."""
         for command in [
             "ls -R -- src/supermarket_receipt_api",
-            "cat src/supermarket_receipt_api/services/checkout.py",
-            "head -n 0 -- src/supermarket_receipt_api/services/checkout.py",
-            "head -n 2001 -- src/supermarket_receipt_api/services/checkout.py",
-            "tail -f -- src/supermarket_receipt_api/services/checkout.py",
+            "cat src/supermarket_receipt_api/checkout.py",
+            "head -n 0 -- src/supermarket_receipt_api/checkout.py",
+            "head -n 2001 -- src/supermarket_receipt_api/checkout.py",
+            "tail -f -- src/supermarket_receipt_api/checkout.py",
             "rg --files",
             "rg --no-config --pre python3 -n -- def app",
             "rg --no-config -n -L -- def app",
@@ -251,7 +247,7 @@ class TutorGuardTests(unittest.TestCase):
             "{}",
             self.payload("Read", {}),
             self.payload("Read", {"file_path": 1}),
-            self.payload("Read", {"filePath": "src/supermarket_receipt_api/services/checkout.py"}),
+            self.payload("Read", {"filePath": "src/supermarket_receipt_api/checkout.py"}),
             self.payload("Bash", {"cmd": "pwd"}),
             self.payload("exec_command", {"command": "pwd"}),
             self.payload("Bash", {"command": ["pwd"]}),

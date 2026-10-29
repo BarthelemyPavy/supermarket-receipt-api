@@ -81,7 +81,7 @@ renvoie `{"status": "ok"}` ; `GET /version` renvoie `{"version": "dev"}` en loca
 
 ## Code à examiner
 
-Les dix fonctions de `src/supermarket_receipt_api/services/checkout.py` sont indépendantes de FastAPI : validation de quantité,
+Les dix fonctions de `src/supermarket_receipt_api/checkout.py` sont indépendantes de FastAPI : validation de quantité,
 arrondi, recherche produit, agrégation, brut de ligne, réduction 3 pour 2, réduction en pourcentage,
 choix de promotion, construction de ligne et construction du ticket. Leurs docstrings précisent
 les paramètres, retours et exceptions (`TypeError`, `KeyError`, `ValueError`).
