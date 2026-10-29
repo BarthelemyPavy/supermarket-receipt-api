@@ -12,10 +12,15 @@ from fractions import Fraction
 class Product:
     """Décrire un produit immuable du catalogue fourni par l'enseignant.
 
-    Paramètres : product_id et name, chaînes ; unit, piece ou gram ; unit_price_cents,
-    entier en centimes par pièce ou kilogramme ; promotion, none, percentage ou
-    three_for_two ; discount_percent, entier de 0 à 100. Retour : Product immuable.
     Aucun effet de bord. Ces valeurs internes ne sont jamais fournies par le client HTTP.
+
+    Attributes:
+        product_id (str): Identifiant exact du produit.
+        name (str): Nom du produit.
+        unit (str): Unité de vente, "piece" ou "gram".
+        unit_price_cents (int): Prix en centimes par pièce ou kilogramme.
+        promotion (str): Offre "none", "percentage" ou "three_for_two".
+        discount_percent (int): Pourcentage entier de 0 à 100, nul par défaut.
     """
 
     product_id: str
@@ -37,9 +42,17 @@ CATALOG = {
 def validate_quantity(quantity: int) -> int:
     """Valider une quantité entière strictement positive, sans conversion.
 
-    Paramètre : quantity, entier de pièces ou de grammes, hors booléen.
-    Retour : la même quantité. TypeError si type invalide, ValueError si quantity <= 0.
     Aucun effet de bord ; une fraction de gramme ou de pièce n'est pas acceptée.
+
+    Args:
+        quantity (int): Nombre de pièces ou de grammes, strictement positif et hors booléen.
+
+    Returns:
+        int: La quantité fournie, sans modification.
+
+    Raises:
+        TypeError: Si quantity n'est pas un entier ou est un booléen.
+        ValueError: Si quantity est inférieure ou égale à zéro.
     """
     if type(quantity) is not int:
         raise TypeError("quantity doit être un entier de pièces ou grammes, hors booléen.")
@@ -51,9 +64,18 @@ def validate_quantity(quantity: int) -> int:
 def round_half_up(numerator: int, denominator: int) -> int:
     """Arrondir un rapport positif au plus proche, avec le demi vers le haut.
 
-    Paramètres : numerator, entier >= 0 ; denominator, entier > 0 ; booléens refusés.
-    Retour : entier arrondi, sans conversion flottante. TypeError si type invalide,
-    ValueError si valeur hors contrat. Aucun effet de bord ni perte de précision.
+    Aucun effet de bord ni conversion flottante.
+
+    Args:
+        numerator (int): Numérateur positif ou nul, hors booléen.
+        denominator (int): Dénominateur strictement positif, hors booléen.
+
+    Returns:
+        int: Rapport arrondi au plus proche, avec le demi vers le haut.
+
+    Raises:
+        TypeError: Si un argument n'est pas un entier ou est un booléen.
+        ValueError: Si numerator est négatif ou denominator est inférieur ou égal à zéro.
     """
     if type(numerator) is not int:
         raise TypeError("numerator doit être un entier positif ou nul, hors booléen.")
@@ -69,9 +91,17 @@ def round_half_up(numerator: int, denominator: int) -> int:
 def get_product(product_id: str) -> Product:
     """Chercher un produit par son identifiant exact, sans alias ni normalisation.
 
-    Paramètre : product_id, chaîne parmi toothbrush, apples, rice ou milk.
-    Retour : Product immuable. TypeError si type invalide ; ValueError si inconnu.
     Aucun effet de bord ; le catalogue n'est pas modifié.
+
+    Args:
+        product_id (str): Identifiant parmi "toothbrush", "apples", "rice" ou "milk".
+
+    Returns:
+        Product: Produit immuable correspondant à l'identifiant.
+
+    Raises:
+        TypeError: Si product_id n'est pas une chaîne.
+        ValueError: Si product_id est absent du catalogue.
     """
     if type(product_id) is not str:
         raise TypeError("product_id doit être une chaîne du catalogue.")
@@ -85,11 +115,22 @@ def get_product(product_id: str) -> Product:
 def aggregate_items(items: list[dict[str, object]]) -> list[dict[str, object]]:
     """Valider puis regrouper les doublons en conservant l'ordre de première apparition.
 
-    Paramètre : items, liste d'objets contenant exactement product_id (str du catalogue)
-    et quantity (int > 0, hors booléen). Retour : nouvelle liste, une entrée par produit.
-    Liste vide acceptée. TypeError si type invalide ; KeyError si champ manquant ;
-    ValueError si champ supplémentaire, identifiant inconnu ou quantité invalide.
     Aucun effet de bord : ni la liste ni les dictionnaires d'entrée ne sont modifiés.
+
+    Args:
+        items (list[dict[str, object]]): Liste, éventuellement vide, de dictionnaires
+            contenant exactement "product_id" (str du catalogue) et "quantity"
+            (int strictement positif, hors booléen).
+
+    Returns:
+        list[dict[str, object]]: Nouvelle liste avec une entrée par produit et les
+        quantités cumulées, dans l'ordre de première apparition.
+
+    Raises:
+        TypeError: Si la liste, un dictionnaire ou un champ a un type invalide.
+        KeyError: Si un champ obligatoire manque.
+        ValueError: Si un champ supplémentaire est présent, un identifiant est inconnu
+            ou une quantité est inférieure ou égale à zéro.
     """
     if type(items) is not list:
         raise TypeError("items doit être une liste d'objets product_id et quantity.")
@@ -114,11 +155,21 @@ def aggregate_items(items: list[dict[str, object]]) -> list[dict[str, object]]:
 def line_subtotal_cents(unit_price_cents: int, quantity: int, unit: str) -> int:
     """Calculer le brut d'une ligne avant réduction, en centimes entiers.
 
-    Paramètres : unit_price_cents, entier >= 0 ; quantity, entier > 0 ; unit, piece
-    ou gram. Pour gram, le prix est par kilogramme et quantity est en grammes.
-    Retour : brut arrondi au centime, demi vers le haut, après agrégation des quantités.
-    TypeError si type invalide (dont booléen) ; ValueError si valeur hors contrat.
-    Aucun effet de bord ; les autres unités sont refusées.
+    Les quantités doivent être agrégées avant cet appel. Aucun effet de bord.
+
+    Args:
+        unit_price_cents (int): Prix positif ou nul en centimes par pièce ou kilogramme,
+            hors booléen.
+        quantity (int): Quantité strictement positive en pièces ou grammes, hors booléen.
+        unit (str): Unité "piece" ou "gram". Pour "gram", le prix est par kilogramme.
+
+    Returns:
+        int: Montant brut arrondi au centime, avec le demi vers le haut.
+
+    Raises:
+        TypeError: Si un argument a un type invalide, y compris un booléen pour un entier.
+        ValueError: Si le prix est négatif, la quantité n'est pas strictement positive
+            ou l'unité n'est ni "piece" ni "gram".
     """
     if type(unit_price_cents) is not int:
         raise TypeError("unit_price_cents doit être un entier en centimes, hors booléen.")
@@ -136,10 +187,19 @@ def line_subtotal_cents(unit_price_cents: int, quantity: int, unit: str) -> int:
 def three_for_two_discount_cents(unit_price_cents: int, quantity: int) -> int:
     """Calculer la réduction pour une pièce offerte par groupe complet de trois.
 
-    Paramètres : unit_price_cents, entier >= 0 ; quantity, entier de pièces > 0.
-    Retour : réduction en centimes ; les pièces restantes sont payées au prix normal.
-    TypeError pour un type invalide, dont booléen ; ValueError pour une valeur négative
-    ou une quantité nulle. Aucun effet de bord ; la promotion démarre dès trois pièces.
+    Les pièces restantes sont payées au prix normal. La promotion démarre dès trois
+    pièces. Aucun effet de bord.
+
+    Args:
+        unit_price_cents (int): Prix par pièce en centimes, positif ou nul, hors booléen.
+        quantity (int): Nombre de pièces strictement positif, hors booléen.
+
+    Returns:
+        int: Réduction totale en centimes.
+
+    Raises:
+        TypeError: Si un argument n'est pas un entier ou est un booléen.
+        ValueError: Si le prix est négatif ou la quantité n'est pas strictement positive.
     """
     line_subtotal_cents(unit_price_cents, quantity, "piece")
     if quantity > 3:
@@ -150,10 +210,18 @@ def three_for_two_discount_cents(unit_price_cents: int, quantity: int) -> int:
 def percentage_discount_cents(subtotal_cents: int, discount_percent: int) -> int:
     """Calculer la réduction, et non le montant net, pour un pourcentage entier.
 
-    Paramètres : subtotal_cents, entier >= 0 ; discount_percent, entier de 0 à 100.
-    Retour : réduction en centimes arrondie au plus proche, demi vers le haut.
-    TypeError pour un type invalide, dont booléen ; ValueError si hors contrat.
     Aucun effet de bord. La réduction porte sur le brut de ligne déjà arrondi.
+
+    Args:
+        subtotal_cents (int): Montant brut positif ou nul en centimes, hors booléen.
+        discount_percent (int): Pourcentage de réduction de 0 à 100 inclus, hors booléen.
+
+    Returns:
+        int: Réduction en centimes arrondie au plus proche, avec le demi vers le haut.
+
+    Raises:
+        TypeError: Si un argument n'est pas un entier ou est un booléen.
+        ValueError: Si le brut est négatif ou le pourcentage est hors de l'intervalle 0–100.
     """
     if type(subtotal_cents) is not int:
         raise TypeError("subtotal_cents doit être un entier en centimes, hors booléen.")
@@ -169,10 +237,20 @@ def percentage_discount_cents(subtotal_cents: int, discount_percent: int) -> int
 def line_discount_cents(product_id: str, quantity: int) -> int:
     """Choisir la seule promotion configurée pour un produit du catalogue.
 
-    Paramètres : product_id, identifiant exact (str) ; quantity, entier > 0 en pièces
-    ou grammes selon le produit. Retour : réduction entière en centimes, zéro sans promo.
-    TypeError/ValueError selon les contrats de get_product et line_subtotal_cents.
     Aucun effet de bord ; les promotions ne se cumulent pas.
+
+    Args:
+        product_id (str): Identifiant exact d'un produit du catalogue.
+        quantity (int): Quantité strictement positive en pièces ou grammes selon le
+            produit, hors booléen.
+
+    Returns:
+        int: Réduction en centimes, ou zéro si le produit n'a pas de promotion.
+
+    Raises:
+        TypeError: Si un argument a un type invalide.
+        ValueError: Si une valeur ne respecte pas le contrat du produit, de la quantité
+            ou de la promotion.
     """
     product = get_product(product_id)
     subtotal = line_subtotal_cents(product.unit_price_cents, quantity, product.unit)
@@ -188,10 +266,22 @@ def line_discount_cents(product_id: str, quantity: int) -> int:
 def build_receipt_line(product_id: str, quantity: int) -> dict[str, object]:
     """Construire une ligne de ticket pour une quantité déjà agrégée.
 
-    Paramètres : product_id, identifiant exact (str) ; quantity, entier > 0 selon l'unité.
-    Retour : dictionnaire d'identité, quantité, unité, prix et montants brut/réduction/net.
-    TypeError/ValueError si entrée invalide. Aucun effet de bord ; total = brut - réduction,
-    sans nouvel arrondi. Le prix est par pièce ou par kilogramme, jamais par gramme.
+    Aucun effet de bord. Le total vaut le brut moins la réduction, sans nouvel arrondi.
+    Le prix est par pièce ou par kilogramme, jamais par gramme.
+
+    Args:
+        product_id (str): Identifiant exact d'un produit du catalogue.
+        quantity (int): Quantité agrégée strictement positive dans l'unité du produit,
+            hors booléen.
+
+    Returns:
+        dict[str, object]: Ligne contenant l'identité du produit, sa quantité, son unité,
+        son prix unitaire et ses montants brut, réduction et net en centimes.
+
+    Raises:
+        TypeError: Si un argument a un type invalide.
+        ValueError: Si une valeur ne respecte pas le contrat du produit, de la quantité
+            ou de la promotion.
     """
     product = get_product(product_id)
     subtotal = line_subtotal_cents(product.unit_price_cents, quantity, product.unit)
@@ -211,10 +301,20 @@ def build_receipt_line(product_id: str, quantity: int) -> dict[str, object]:
 def checkout(items: list[dict[str, object]]) -> dict[str, object]:
     """Produire le ticket complet, après validation et agrégation du panier.
 
-    Paramètre : items, liste exacte d'objets product_id/quantity décrite par aggregate_items.
-    Retour : dictionnaire lines, subtotal_cents, discount_cents et total_cents ; panier vide
-    accepté, avec liste vide et trois zéros. TypeError/KeyError/ValueError si entrée invalide.
     Aucun effet de bord ; totaux obtenus par somme des lignes, sans arrondi supplémentaire.
+
+    Args:
+        items (list[dict[str, object]]): Panier au format décrit par aggregate_items.
+            La liste peut être vide.
+
+    Returns:
+        dict[str, object]: Ticket avec les clés "lines", "subtotal_cents", "discount_cents"
+        et "total_cents". Un panier vide produit une liste de lignes vide et trois zéros.
+
+    Raises:
+        TypeError: Si le panier ou un de ses champs a un type invalide.
+        KeyError: Si un champ obligatoire manque.
+        ValueError: Si un champ supplémentaire ou une valeur hors contrat est présent.
     """
     lines = [
         build_receipt_line(item["product_id"], item["quantity"]) for item in aggregate_items(items)

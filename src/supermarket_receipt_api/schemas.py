@@ -8,9 +8,12 @@ from pydantic import BaseModel, ConfigDict, Field
 class CartItem(BaseModel):
     """Valider une entrée JSON du panier sans coercition ni champ supplémentaire.
 
-    Paramètres : product_id, chaîne ; quantity, entier > 0 hors booléen.
-    Retour : modèle validé. Aucun effet de bord ; l'unité vient uniquement du catalogue.
+    Aucun effet de bord ; l'unité vient uniquement du catalogue.
     La présence de product_id dans le catalogue est vérifiée par le moteur métier.
+
+    Attributes:
+        product_id (str): Identifiant du produit à rechercher dans le catalogue.
+        quantity (int): Quantité strictement positive, hors booléen.
     """
 
     model_config = ConfigDict(strict=True, extra="forbid")
@@ -22,8 +25,10 @@ class CartItem(BaseModel):
 class CheckoutRequest(BaseModel):
     """Valider le corps obligatoire de POST /checkout.
 
-    Paramètre : items, liste de CartItem, éventuellement vide. Retour : modèle validé.
     Aucun effet de bord ; les champs inconnus et les types invalides sont refusés.
+
+    Attributes:
+        items (list[CartItem]): Liste des lignes du panier, éventuellement vide.
     """
 
     model_config = ConfigDict(strict=True, extra="forbid")
@@ -34,9 +39,18 @@ class CheckoutRequest(BaseModel):
 class ReceiptLine(BaseModel):
     """Décrire une ligne de ticket agrégée, avec ses montants en centimes.
 
-    Paramètres : product_id/name, chaînes ; unit, piece ou gram ; quantity et prix/montants,
-    entiers. Retour : modèle de ligne sérialisable en JSON. Aucun effet de bord.
-    unit_price_cents est un prix par pièce ou kilogramme selon l'unité.
+    Modèle sérialisable en JSON, sans effet de bord. Le prix unitaire est par pièce ou
+    kilogramme selon l'unité.
+
+    Attributes:
+        product_id (str): Identifiant du produit.
+        name (str): Nom du produit.
+        quantity (int): Quantité agrégée de pièces ou de grammes.
+        unit (Literal["piece", "gram"]): Unité de vente.
+        unit_price_cents (int): Prix en centimes par pièce ou kilogramme.
+        subtotal_cents (int): Montant brut de la ligne en centimes.
+        discount_cents (int): Réduction de la ligne en centimes.
+        total_cents (int): Montant net de la ligne en centimes.
     """
 
     model_config = ConfigDict(strict=True, extra="forbid")
@@ -54,8 +68,13 @@ class ReceiptLine(BaseModel):
 class ReceiptResponse(BaseModel):
     """Décrire le ticket complet et la somme de ses montants.
 
-    Paramètres : lines, liste de ReceiptLine ; subtotal_cents, discount_cents et total_cents,
-    entiers en centimes. Retour : modèle JSON du ticket. Aucun effet de bord ni stockage.
+    Modèle sérialisable en JSON, sans effet de bord ni stockage.
+
+    Attributes:
+        lines (list[ReceiptLine]): Lignes agrégées du ticket.
+        subtotal_cents (int): Somme des montants bruts en centimes.
+        discount_cents (int): Somme des réductions en centimes.
+        total_cents (int): Somme des montants nets en centimes.
     """
 
     model_config = ConfigDict(strict=True, extra="forbid")
