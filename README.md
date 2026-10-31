@@ -4,7 +4,7 @@ Une petite enseigne veut livrer une nouvelle version de son moteur de caisse. L'
 
 ## Organisation
 
-Le travail est **individuel** : chacun conserve son dépôt privé, ses tests et sa CI. Deux revues ponctuelles se font en binôme : après les tests des autres fonctions, puis après la première CI. Un partage d'écran suffit ; il n'est pas nécessaire de partager un accès en écriture. Chacun effectue ses propres modifications après l'échange.
+Le travail est **individuel** : chacun conserve son dépôt privé, ses tests et sa CI. Deux revues ponctuelles se font en binôme : après les tests du socle de J1, puis après la première CI. Un partage d'écran suffit ; il n'est pas nécessaire de partager un accès en écriture. Chacun effectue ses propres modifications après l'échange.
 
 Le TD comprend **deux parties**, chacune après le cours correspondant : tests unitaires et qualité, puis GitHub Actions. Préparez votre poste avant la séance à l'aide du guide de prérequis. La copie du projet et son premier lancement se font seulement au début de la partie 1, pas à l'ouverture de la journée.
 
@@ -14,7 +14,23 @@ Réutilisez les notions de choix des cas, assertions, lint, formatage, types, co
 
 ### Démarrer
 
-Utilisez **Use this template** pour créer votre propre dépôt **privé**, puis clonez votre copie. Ne copiez pas toutes les branches. Partagez son accès avec l'enseignant selon les consignes de séance. Un simple clone du dépôt enseignant ne crée pas votre propre pipeline GitHub Actions.
+Clonez la branche `main` du [dépôt starter Supermarket Receipt API](https://github.com/BarthelemyPavy/supermarket-receipt-api), puis entrez dans le dossier :
+
+```bash
+git clone --branch main --single-branch https://github.com/BarthelemyPavy/supermarket-receipt-api.git
+cd supermarket-receipt-api
+```
+
+Sur GitHub, créez dans **votre compte** un dépôt **privé et vide** nommé `supermarket-receipt-api`, sans ajouter de README, de `.gitignore` ni de licence.
+
+Dans les commandes suivantes, remplacez `VOTRE_COMPTE` par votre identifiant GitHub. Faites pointer `origin` vers ce nouveau dépôt, puis poussez la branche `main` :
+
+```bash
+git remote set-url origin https://github.com/VOTRE_COMPTE/supermarket-receipt-api.git
+git push -u origin main
+```
+
+Votre copie est maintenant sur votre compte GitHub. Partagez son accès avec l’enseignant selon les consignes de séance. Un simple clone sur votre poste ne suffit pas : le push crée la branche dans votre dépôt personnel, où votre CI pourra s’exécuter.
 
 Python 3.13 et `uv` doivent être disponibles. Ouvrez un terminal à la racine de votre copie :
 
@@ -31,7 +47,7 @@ Repérez [le contrat métier](docs/contrat.md), le catalogue `CATALOG` et les fo
 
 Au premier lancement, la suite affiche **100 cas réussis** (`100 passed`). Que permet ce résultat d'affirmer sur le moteur de caisse ? Préparez votre réponse, puis **attendez la démonstration collective avant de modifier le code ou les tests**.
 
-Sur une fonction déjà testée, nous examinerons un cas annoncé en séance :
+Sur `percentage_discount_cents`, une fonction déjà testée, nous examinerons un cas annoncé en séance :
 
 1. Déterminer le résultat attendu à partir du contrat, indépendamment du code actuel.
 2. Ajouter ce cas à la suite et observer le résultat.
@@ -66,6 +82,22 @@ uv run uvicorn supermarket_receipt_api.main:app --reload
 ```
 
 La documentation HTTP est alors disponible sur `http://127.0.0.1:8000/docs`.
+
+### Fonctions à tester en J1
+
+Les fonctions ciblées se trouvent dans `src/supermarket_receipt_api/checkout.py`. La démonstration collective porte sur `percentage_discount_cents`, qui calcule une remise en pourcentage et possède déjà des tests. Reproduisez le test de régression et la correction expliqués en séance, puis conservez-les dans votre branche.
+
+Pendant les **40 minutes de travail individuel, reproduction comprise**, construisez vos tests sur ce socle, dans cet ordre :
+
+| Ordre | Fonction | Rôle métier |
+| --- | --- | --- |
+| 1 | `validate_quantity` | Valider la quantité d'un article. |
+| 2 | `three_for_two_discount_cents` | Calculer la remise de la promotion « trois pour le prix de deux ». |
+| 3 | `line_subtotal_cents` | Calculer le montant d'une ligne avant remise, pour un article à la pièce ou au poids. Complétez les tests déjà présents. |
+
+Pour chaque fonction, choisissez les comportements à vérifier, les entrées, les résultats attendus et les assertions à partir du contrat et des quatre axes ci-dessous. Les noms des fonctions fixent le périmètre ; les cas restent à construire et à expliquer. Conservez les tests fournis : il n'y a ni quota de tests ni objectif de couverture à 100 %.
+
+**Si vous avez terminé le socle et relancé les contrôles**, vous pouvez poursuivre avec `aggregate_items`, qui prépare le panier en regroupant ses lignes. Ce prolongement est facultatif et ne conditionne pas la revue en binôme. Les autres fonctions du module ne font pas partie du travail obligatoire de J1.
 
 ### Votre mission
 
@@ -117,7 +149,7 @@ Le **linter** Ruff repère des problèmes de code sans exécuter l'application ;
 
 `pytest-cov`, déjà installé par `uv sync --locked`, exécute les tests unitaires et mesure la couverture du code métier dans `checkout.py`. Il n'est pas nécessaire de relancer les mêmes tests une seconde fois pour produire le rapport. La colonne `Missing` indique les lignes non exécutées ; le périmètre mesuré n'est pas toute l'API.
 
-Expliquez ce qu'une zone non exécutée vous invite à vérifier. Puis revenez à la démonstration : une ligne exécutée par les tests pouvait-elle produire un résultat faux ? La couverture ne valide ni les assertions ni tous les comportements. **Aucun seuil de couverture n'est imposé, en J1 comme dans la suite du module.**
+Dans les fonctions du socle, expliquez ce qu'une zone non exécutée, s'il en reste, vous invite à vérifier. Puis revenez à la démonstration : une ligne exécutée par les tests pouvait-elle produire un résultat faux ? La couverture ne valide ni les assertions ni tous les comportements. **Aucun seuil de couverture n'est imposé, en J1 comme dans la suite du module.**
 
 Le **type checker**, présenté avec mypy en cours, détecte certaines incompatibilités avec les annotations : une chaîne à la place d'un entier, par exemple. Il ne garantit pas qu'une valeur du bon type respecte le métier. `mypy` n'est pas installé dans le starter et son exécution n'est pas demandée en J1.
 
@@ -127,15 +159,17 @@ Un hook Git `pre-commit` lance un contrôle avant le commit et peut empêcher sa
 
 Ces contrôles rapides complètent la CI, sans la remplacer : un hook local peut manquer ou être contourné. Ils sont distincts des hooks des assistants IA décrits plus bas. Leur usage a été présenté en cours ; aucune installation de hook pre-commit n'est obligatoire dans ce TD.
 
-### Revue en binôme 1 — comparer les tests des autres fonctions
+### Revue en binôme 1 — comparer les tests du socle
 
-Après votre recherche individuelle, présentez chacun un cas : comportement visé, axe, entrée et résultat attendu à partir du contrat. Comparez les comportements protégés, les choix redondants et les angles morts, pas le nombre de tests. Notez ce que vous souhaitez approfondir sans fusionner vos suites : chacun garde ses choix et complète son propre travail. Conservez les tests fournis. Cette revue termine la partie 1 ; la partie 2 commencera après le cours GitHub Actions.
+Après le travail sur `validate_quantity`, `three_for_two_discount_cents` et `line_subtotal_cents`, présentez chacun un cas, même si certains points restent à approfondir : comportement visé, axe, entrée et résultat attendu à partir du contrat. Comparez les comportements protégés, les choix redondants et les angles morts, pas le nombre de tests. Notez ce que vous souhaitez approfondir sans fusionner vos suites : chacun garde ses choix et complète son propre travail. Conservez les tests fournis. Cette revue termine la partie 1 ; la partie 2 commencera après le cours GitHub Actions.
 
 ## Partie 2 — Première CI, après le cours GitHub Actions
 
 Ce dépôt est le **point de départ de la journée 1**. Travaillez dans la copie privée créée au démarrage, et conservez les tests fournis : identifier une redondance ne justifie pas de supprimer ou d'affaiblir une assertion.
 
-La configuration GitHub Actions est à construire pendant la séance. Le premier objectif est de rejouer automatiquement le lint, la vérification du formatage et les tests unitaires avec couverture **à chaque push sur une branche**. Les commandes tournent **directement sur un runner Ubuntu hébergé par GitHub**, dans l'environnement virtuel géré par `uv` : récupération du code, préparation de Python et de `uv`, puis `uv sync --locked` et vérifications. Il n'y a ni build Docker ni conteneur dans cette première CI.
+Le fichier [`.github/workflows/ci.yml`](.github/workflows/ci.yml) est fourni : à chaque push, un job démarre sur un runner Ubuntu hébergé par GitHub et récupère le code avec `actions/checkout`. **Un run vert à ce stade signifie seulement que le checkout a réussi : aucun test n'a été exécuté.**
+
+Complétez ce workflow pendant la séance pour rejouer automatiquement le lint, la vérification du formatage et les tests unitaires avec couverture **à chaque push sur une branche**. Les commandes tournent **directement sur le runner**, dans l'environnement virtuel géré par `uv` : préparation de Python et de `uv`, puis `uv sync --locked` et vérifications. Il n'y a ni build Docker ni conteneur dans cette première CI.
 
 Réutilisez les commandes ci-dessus : le rapport textuel apparaît dans les logs, sans seuil bloquant. Aucun runner local n'est nécessaire aujourd'hui. Montrez une CI rouge à cause d'un véritable échec de test, puis verte après correction, pas simplement une erreur de YAML. Il n'est pas nécessaire de découvrir un nouveau bug métier.
 

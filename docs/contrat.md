@@ -86,6 +86,6 @@ arrondi, recherche produit, agrégation, brut de ligne, réduction 3 pour 2, ré
 choix de promotion, construction de ligne et construction du ticket. Leurs docstrings précisent
 les paramètres, retours et exceptions (`TypeError`, `KeyError`, `ValueError`).
 
-Les six cas de `tests/unit/test_checkout.py` ne sont qu’un point de départ sur deux fonctions.
+Les 100 cas de `tests/unit/test_checkout.py` ne sont qu’un point de départ sur deux fonctions.
 En J1, tester directement les fonctions, sans serveur, Docker ou cluster. Les tests d’intégration
 de l’API arrivent en J2 : ils appellent route, validation, vrai moteur et sérialisation ensemble.

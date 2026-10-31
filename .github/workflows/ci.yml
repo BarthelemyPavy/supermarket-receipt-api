@@ -1,0 +1,19 @@
+name: "CI"
+
+"on": ["push"]
+
+permissions:
+  contents: "read"
+
+jobs:
+  ci:
+    name: "CI à compléter"
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 5
+    steps:
+      - name: "Récupérer le code"
+        uses: "actions/checkout@v7.0.1"
+        with:
+          persist-credentials: false
+
+      # À compléter pendant le TD : environnement, dépendances et vérifications.
