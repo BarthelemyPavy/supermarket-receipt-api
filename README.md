@@ -1,6 +1,6 @@
 # Supermarket Receipt API — starter J1
 
-Une petite enseigne veut livrer une nouvelle version de son moteur de caisse. L'API et les calculs existent déjà, accompagnés de 100 cas de test qui passent. Votre mission : déterminer ce que cette suite permet d'affirmer, choisir les comportements à sécuriser et préparer une modification livrable.
+Une petite enseigne veut livrer une nouvelle version de son moteur de caisse. L'API et les calculs existent déjà, accompagnés de 100 cas de test qui passent. À vous de déterminer ce que cette suite permet d'affirmer, de choisir les comportements à sécuriser et de préparer une modification livrable.
 
 ## Organisation
 
@@ -95,11 +95,11 @@ Pendant les **40 minutes de travail individuel, reproduction comprise**, constru
 | 2 | `three_for_two_discount_cents` | Calculer la remise de la promotion « trois pour le prix de deux ». |
 | 3 | `line_subtotal_cents` | Calculer le montant d'une ligne avant remise, pour un article à la pièce ou au poids. Complétez les tests déjà présents. |
 
-Pour chaque fonction, choisissez les comportements à vérifier, les entrées, les résultats attendus et les assertions à partir du contrat et des quatre axes ci-dessous. Les noms des fonctions fixent le périmètre ; les cas restent à construire et à expliquer. Conservez les tests fournis : il n'y a ni quota de tests ni objectif de couverture à 100 %.
+Pour chaque fonction, choisissez les comportements à vérifier, les entrées, les résultats attendus et les assertions à partir du contrat et des quatre axes ci-dessous. Le moteur contient **deux défauts**. Le premier est trouvé ensemble pendant la démonstration ; le second se trouve dans l'une des trois fonctions ci-dessous. Pour chaque fonction, écrivez **au moins un cas normal et un cas limite**. Conservez les tests fournis ; aucun objectif de couverture n'est fixé.
 
 **Si vous avez terminé le socle et relancé les contrôles**, vous pouvez poursuivre avec `aggregate_items`, qui prépare le panier en regroupant ses lignes. Ce prolongement est facultatif et ne conditionne pas la revue en binôme. Les autres fonctions du module ne font pas partie du travail obligatoire de J1.
 
-### Votre mission
+### Choisir des tests utiles
 
 Vous êtes responsables de la confiance que l'équipe peut accorder au ticket de caisse. Construisez une stratégie de tests unitaires à partir du contrat, autour de quatre axes :
 
@@ -110,7 +110,7 @@ Vous êtes responsables de la confiance que l'équipe peut accorder au ticket de
 | **Edge cases** | Quelles situations particulières restent valides selon le contrat ? |
 | **Failures / erreurs attendues** | Quelles entrées faut-il refuser, et comment ? |
 
-Ces axes peuvent se recouper. Ce ne sont ni un quota de tests ni une obligation d'écrire quatre tests pour chaque fonction. Le but est de choisir des cas utiles, pas de multiplier les valeurs qui vérifient le même comportement.
+Ces axes peuvent se recouper. Vous n'êtes pas obligé d'écrire quatre tests par fonction : le minimum est un cas normal et un cas limite. Ajoutez les autres axes quand ils vérifient un risque distinct, sans multiplier les valeurs qui vérifient le même comportement.
 
 Avant d'écrire chaque test, complétez votre tableau de travail :
 
@@ -134,6 +134,14 @@ Lors de la revue, votre présentation doit permettre de comprendre :
 - Pourquoi les entrées choisies sont pertinentes et quels choix seraient redondants, sans supprimer ni affaiblir les tests fournis.
 - Quelle modification a été faite et quelle régression un test permet d'éviter.
 - Comment un autre développeur peut reproduire vos vérifications.
+
+### Méthode, pour chaque fonction
+
+1. Lisez la docstring de la fonction et la règle correspondante dans `docs/contrat.md`.
+2. Remplissez une ligne du tableau par cas : au moins un cas normal et un cas limite.
+3. Écrivez les tests dans `tests/unit/`, puis lancez `uv run pytest tests/unit -q`.
+4. Si un test échoue, vérifiez d'abord l'attendu dans le contrat. S'il est juste, corrigez le code, jamais l'attendu.
+5. Relancez toute la suite, puis les contrôles de lint, de format et de couverture.
 
 ### Compléter les tests : lint, types et coverage
 
@@ -159,6 +167,14 @@ Un hook Git `pre-commit` lance un contrôle avant le commit et peut empêcher sa
 
 Ces contrôles rapides complètent la CI, sans la remplacer : un hook local peut manquer ou être contourné. Ils sont distincts des hooks des assistants IA décrits plus bas. Leur usage a été présenté en cours ; aucune installation de hook pre-commit n'est obligatoire dans ce TD.
 
+### Comment savoir que la partie 1 est terminée
+
+- [ ] Chaque fonction du socle a au moins un cas normal et un cas limite, avec un attendu tiré du contrat.
+- [ ] Le second défaut est trouvé : un test l'a montré en rouge, et il passe après la correction du code.
+- [ ] `uv run ruff check .` et `uv run ruff format --check .` ne signalent rien.
+- [ ] Vous savez dire quelles lignes de `checkout.py` restent non exécutées dans le rapport de couverture.
+- [ ] Tout est commité sur votre branche de travail.
+
 ### Revue en binôme 1 — comparer les tests du socle
 
 Après le travail sur `validate_quantity`, `three_for_two_discount_cents` et `line_subtotal_cents`, présentez chacun un cas, même si certains points restent à approfondir : comportement visé, axe, entrée et résultat attendu à partir du contrat. Comparez les comportements protégés, les choix redondants et les angles morts, pas le nombre de tests. Notez ce que vous souhaitez approfondir sans fusionner vos suites : chacun garde ses choix et complète son propre travail. Conservez les tests fournis. Cette revue termine la partie 1 ; la partie 2 commencera après le cours GitHub Actions.
@@ -171,9 +187,22 @@ Le fichier [`.github/workflows/ci.yml`](.github/workflows/ci.yml) est fourni : �
 
 Complétez ce workflow pendant la séance pour rejouer automatiquement le lint, la vérification du formatage et les tests unitaires avec couverture **à chaque push sur une branche**. Les commandes tournent **directement sur le runner**, dans l'environnement virtuel géré par `uv` : préparation de Python et de `uv`, puis `uv sync --locked` et vérifications. Il n'y a ni build Docker ni conteneur dans cette première CI.
 
-Réutilisez les commandes ci-dessus : le rapport textuel apparaît dans les logs, sans seuil bloquant. Aucun runner local n'est nécessaire aujourd'hui. Montrez une CI rouge à cause d'un véritable échec de test, puis verte après correction, pas simplement une erreur de YAML. Il n'est pas nécessaire de découvrir un nouveau bug métier.
+### Étapes
 
-Si tous les tests passent, modifiez temporairement une attente pour la rendre volontairement incorrecte sur une branche dédiée, en annonçant que vous vérifiez le pipeline. Restaurez immédiatement l'attente correcte après avoir constaté le rouge, puis vérifiez le retour au vert. Cette manipulation valide le signal de CI, pas la pertinence des tests ; elle ne constitue pas le bonus de mutation ci-dessous.
+Partez du `ci.yml` fourni. Après chaque étape : commit, push, puis ouvrez le run dans l'onglet **Actions** avant de continuer.
+
+1. **Python et uv** : ajoutez l'action `astral-sh/setup-uv@v10.2.0` avec `python-version: "3.13"` et `enable-cache: false`.
+2. **Dépendances** : ajoutez une step qui installe les dépendances de `uv.lock` sans les modifier. Son log liste les paquets installés.
+3. **Lint et format** : ajoutez une step par contrôle, avec les commandes de la partie 1. La vérification du formatage ne doit pas modifier les fichiers.
+4. **Tests et couverture** : ajoutez la commande de tests de la partie 1. Le log affiche le nombre de tests passés et le tableau de couverture, sans seuil bloquant.
+5. **Un run rouge, puis vert** : sur une branche temporaire, remplacez un résultat attendu par une valeur fausse, puis poussez. Dans le run rouge, retrouvez le job, la step, le nom du test, la valeur obtenue et la valeur attendue. Restaurez l'attendu correct et poussez : le run redevient vert. Une erreur de YAML ne compte pas : il faut un vrai test en échec. Cette manipulation vérifie le signal de la CI, pas la pertinence des tests ; elle est distincte du bonus de mutation.
+
+### Comment savoir que la partie 2 est terminée
+
+- [ ] Le run montre les steps de préparation, de lint, de format et de tests, toutes vertes.
+- [ ] Le log de pytest affiche le tableau de couverture de `checkout.py`.
+- [ ] Vous avez le lien d'un run rouge dû à un vrai test, et celui du run vert qui suit.
+- [ ] Vous savez expliquer l'échec : quelle step, quel test, quelle valeur attendue.
 
 ### Revue en binôme 2 — expliquer la première CI
 
