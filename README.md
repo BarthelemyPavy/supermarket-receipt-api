@@ -237,3 +237,5 @@ Le cadre est défini dans [AGENTS.md](AGENTS.md) et [CLAUDE.md](CLAUDE.md). La c
 Le scénario s'inspire du [Supermarket Receipt Refactoring Kata d'Emily Bache](https://github.com/emilybache/SupermarketReceipt-Refactoring-Kata). Notre API et les règles explicites de ce kit constituent une adaptation pédagogique, pas une reproduction exacte du kata.
 
 Pour la progression CI/CD : [UPenn — CI/CD with GitHub Actions](https://www.cis1912.org/labs/11-13-cicd/) et [Helsinki — DevOps with Docker, Deployment pipelines](https://github.com/docker-hy/docker-hy.github.io/blob/master/docs/part-3/section-2.md).
+
+<!-- Essai J2 temporaire : PR qui ne modifie que ce fichier. -->
