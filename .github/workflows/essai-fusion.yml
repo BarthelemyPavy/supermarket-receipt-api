@@ -1,0 +1,18 @@
+# Essai temporaire : quel code un run de PR récupère-t-il ? À supprimer.
+name: "Essai fusion"
+on: pull_request
+permissions:
+  contents: read
+jobs:
+  fusion:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - run: |
+          echo "GITHUB_REF=$GITHUB_REF"
+          echo "GITHUB_SHA=$GITHUB_SHA"
+          echo "Tête de la branche de la PR : ${{ github.event.pull_request.head.sha }}"
+          git log --oneline -3
+          ls .github/workflows
