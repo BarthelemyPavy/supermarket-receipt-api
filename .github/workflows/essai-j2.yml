@@ -1,0 +1,32 @@
+# Essai temporaire pour vérifier les TD 5 et 7 du J2 (slides 50, 65 et 66). À supprimer.
+name: "Essai J2"
+
+on:
+  pull_request:
+    paths-ignore: ["**.md"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env: { NIVEAU: workflow }
+
+jobs:
+  essai:
+    runs-on: ubuntu-latest
+    env: { NIVEAU: job }
+    steps:
+      - run: echo "Niveau $NIVEAU"
+      - run: |
+          echo "Niveau $NIVEAU, message $MESSAGE"
+          echo "Secret $SECRET"
+          echo "$SECRET" | rev
+        env:
+          NIVEAU: step
+          MESSAGE: ${{ vars.MESSAGE }}
+          SECRET: ${{ secrets.FAUX_SECRET }}
+      - name: "Laisser le temps d'un second push"
+        run: sleep 60
