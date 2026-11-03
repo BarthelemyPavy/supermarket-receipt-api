@@ -5,7 +5,6 @@ Voir docs/contrat.md et THIRD_PARTY_NOTICES.md. Aucun stockage ni appel réseau.
 """
 
 from dataclasses import dataclass
-from fractions import Fraction
 
 
 @dataclass(frozen=True)
@@ -202,9 +201,7 @@ def three_for_two_discount_cents(unit_price_cents: int, quantity: int) -> int:
         ValueError: Si le prix est négatif ou la quantité n'est pas strictement positive.
     """
     line_subtotal_cents(unit_price_cents, quantity, "piece")
-    if quantity > 3:
-        return (quantity // 3) * unit_price_cents
-    return 0
+    return (quantity // 3) * unit_price_cents
 
 
 def percentage_discount_cents(subtotal_cents: int, discount_percent: int) -> int:
@@ -231,7 +228,7 @@ def percentage_discount_cents(subtotal_cents: int, discount_percent: int) -> int
         raise ValueError("subtotal_cents doit être supérieur ou égal à 0.")
     if not 0 <= discount_percent <= 100:
         raise ValueError("discount_percent doit être compris entre 0 et 100 inclus.")
-    return round(Fraction(subtotal_cents * discount_percent, 100))
+    return round_half_up(subtotal_cents * discount_percent, 100)
 
 
 def line_discount_cents(product_id: str, quantity: int) -> int:
