@@ -1,7 +1,7 @@
 # Contrat métier — Supermarket Receipt
 
-Ce document est la référence fonctionnelle de l’exercice. Les résultats actuels du starter peuvent
-être incorrects : les tests fournis ne couvrent pas toutes les règles. On travaille sur une caisse
+Ce document est la référence fonctionnelle de l’exercice. La version de fin de J2 corrige les
+défauts étudiés en J1 et ajoute des tests unitaires et HTTP. On travaille sur une caisse
 simplifiée, pas sur une application de paiement ou une réglementation de facturation.
 
 ## Catalogue
@@ -86,6 +86,7 @@ arrondi, recherche produit, agrégation, brut de ligne, réduction 3 pour 2, ré
 choix de promotion, construction de ligne et construction du ticket. Leurs docstrings précisent
 les paramètres, retours et exceptions (`TypeError`, `KeyError`, `ValueError`).
 
-Les 100 cas de `tests/unit/test_checkout.py` ne sont qu’un point de départ sur deux fonctions.
-En J1, tester directement les fonctions, sans serveur, Docker ou cluster. Les tests d’intégration
-de l’API arrivent en J2 : ils appellent route, validation, vrai moteur et sérialisation ensemble.
+Les 100 cas de `tests/unit/test_checkout.py` sont conservés comme point de départ sur deux
+fonctions. `tests/unit/test_j1.py` complète les comportements vérifiés en J1. Les tests
+d’intégration de `tests/integration/test_api.py` appellent route, validation, vrai moteur et
+sérialisation ensemble, en mémoire et sans serveur réseau ni conteneur.
